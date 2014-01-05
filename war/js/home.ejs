@@ -1,0 +1,66 @@
+	<div class="container">
+		<ul id="gn-menu" class="gn-menu-main">
+			<li class="gn-trigger">
+				<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+				<nav class="gn-menu-wrapper">
+					<div class="gn-scroller">
+						<ul class="gn-menu">
+							<li class="gn-search-item">
+								<input placeholder="Search" type="search" class="gn-search">
+								<a class="gn-icon gn-icon-search"><span>Search</span></a>
+							</li>
+							<li><a href="#home" class="gn-icon gn-icon-home smoothScroll">Home</a></li>
+							<li><a href="#about" class="gn-icon gn-icon-archive smoothScroll">About</a></li>
+							<li><a href="#portfolio" class="gn-icon gn-icon-pictures smoothScroll">Portfolio</a></li>
+							<li><a href="#blog" class="gn-icon gn-icon-article smoothScroll">Blog</a></li>
+							<li><a href="#contact" class="gn-icon gn-icon-envelop smoothScroll">Contact</a></li>
+						</ul>
+					</div><!-- /gn-scroller -->
+				</nav>
+			</li>
+			<li><a href="/" class="smoothScroll">Persona</a></li>
+		</ul>
+	</div>
+	
+	<section id="about" name="about"></section>
+	<div class="container about" id="about">
+		<div class="col-lg-6 col-lg-offset-3">
+			<h3><%=data.contactInfo["fullName"]%></h3>
+			<h5><%=data.demographics["locationGeneral"]%></h5>
+			<hr>
+			<p><%=getBio()%></p>
+		</div><!-- /col-lg-6 -->
+	</div>
+	
+	
+	<div id="chartwrap">
+	<br>
+	<br>
+		<div class="container centered">
+			<div class="col-lg-3"></div>
+				<% var max = data.digitalFootprint.topics.length %>
+				<% for(var i = 0; i < max; i++) { %>
+					<% var topic = data.digitalFootprint.topics[i] %>
+					<% if(speciality[topic.value]) { %>
+					<% var focus = speciality[topic.value] %>
+					<% var pc = focus.length*100/5 %>
+					<div class="col-lg-2">
+						<canvas id="canvas<%=i%>" height="130" width="130"></canvas>
+						<label><%=topic.value%></label>
+						<br>
+						<script>
+							var doughnutData = [{value:<%=pc%>, color:"#1abc9c"}, {value:<%=100-pc%>, color:"#ecf0f1"}];
+							var myDoughnut = new Chart(document.getElementById("canvas<%=i%>").getContext("2d")).Doughnut(doughnutData);
+						</script>
+						<br>
+						<br>
+					</div>
+					<% } %>
+				<% } %>
+				
+				
+			<div class="col-lg-3"></div>
+		</div>
+	</div>
+	
+	

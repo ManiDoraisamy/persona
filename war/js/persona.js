@@ -10,11 +10,9 @@ function VoiceReg(persona)
 		this.recognition.continuous = true;
 		this.recognition.interimResults = true;
 		this.recognition.onstart = function() {
-			
 		};
 		this.recognition.onresult = function(event) {
 		    var interim_transcript = '';
-
 		    for (var i = event.resultIndex; i < event.results.length; ++i) {
 		      if (event.results[i].isFinal) {
 		        final_transcript += event.results[i][0].transcript;
@@ -23,8 +21,8 @@ function VoiceReg(persona)
 		      }
 		    }
 	    	console.dir(final_transcript);
-		    var ltrn = final_transcript.toLowerCase();
-		    if(ltrn.indexOf("next") >= 0)
+		    var ltrn = interim_transcript.toLowerCase();
+		    if(ltrn.indexOf("next") >= 0 || ltrn.indexOf("text") >= 0)
 		    {
 		    	console.dir(ltrn);
 		    	curr.persona.next();
@@ -76,11 +74,7 @@ function Persona(email)
 							curr.events.push(focus[j]);
 					}
 				}
-				//curr.render(); 
-				  navigator.geolocation.getCurrentPosition(function(position){
-					  curr.position = position;
-					  curr.showMap(); 
-				  });
+				curr.render(); 
 			},
 			error: function(e){ console.dir(e); }
 		});
@@ -95,7 +89,8 @@ function Persona(email)
 				});
 			}
 		});
-
+		console.dir(this.voice.recognition);
+		this.voice.listen();
 	}
 	
 	this.getBio = function()
@@ -107,6 +102,21 @@ function Persona(email)
 				return prof["bio"];
 		}
 		return null;
+	}
+	
+	this.getEvents = function()
+	{
+		var curr = this;
+		jQuery.ajax({
+			url:"http://api-m2x.att.com/v1/feeds/c29496fac7ca2eca0df0775c3c015d3b/location", dataType:"json", type:"GET", data:{},
+			beforeSend: function (xhr) {
+			    xhr.setRequestHeader ("X-M2X-KEY", "fc49d4cf996747de24fb0cf0824aa0e0");
+			},
+			success: function(dao){ 
+				console.dir(dao);
+			},
+			error: function(e){ console.dir(e); }
+		});
 	}
 	
 	this.turnOn = function()
@@ -176,7 +186,6 @@ function Persona(email)
 			    map.graphics.add(egraphic);
 		    });
 		});
-		this.voice.listen();
 	}
 	
 	this.turnOff = function()
@@ -199,7 +208,6 @@ setInterval(function () {
 	if ( !persona.spokes.Device.isAttached ) return;
 	
 	persona.spokes.Device.events( function(result) {
-		console.dir(result);
 		if ( result["Result"] && result.Result.length>0 )
 		{
 			for(var i = 0; i < result.Result.length; i++)
